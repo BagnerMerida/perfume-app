@@ -1,0 +1,89 @@
+<div class="admin-container">
+
+  <h1>Administrar imágenes de productos</h1>
+
+  <mat-card class="form-card">
+
+    <mat-form-field appearance="outline">
+      <mat-label>ID del producto</mat-label>
+      <input
+        matInput
+        type="number"
+        [(ngModel)]="productId"
+      >
+    </mat-form-field>
+
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="loadImages()"
+    >
+      Cargar imágenes
+    </button>
+
+    <hr>
+
+    <input
+      type="file"
+      accept="image/*"
+      (change)="onFileSelected($event)"
+    >
+
+    <mat-checkbox [(ngModel)]="mainImage">
+      Imagen principal
+    </mat-checkbox>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Orden</mat-label>
+      <input
+        matInput
+        type="number"
+        [(ngModel)]="displayOrder"
+      >
+    </mat-form-field>
+
+    <button
+      mat-raised-button
+      color="accent"
+      (click)="uploadImage()"
+    >
+      Subir imagen
+    </button>
+
+  </mat-card>
+
+  <div class="images-grid">
+
+    @for (image of images; track image.id) {
+
+      <mat-card class="image-card">
+
+        <img
+          [src]="'http://localhost:8080/perfume' + image.imageUrl"
+          [alt]="'Imagen producto ' + productId"
+        >
+
+        <div class="image-info">
+          <p>
+            Principal:
+            <strong>{{ image.mainImage ? 'Sí' : 'No' }}</strong>
+          </p>
+
+          <p>Orden: {{ image.displayOrder }}</p>
+        </div>
+
+        <button
+          mat-raised-button
+          color="warn"
+          (click)="deleteImage(image.id)"
+        >
+          Eliminar
+        </button>
+
+      </mat-card>
+
+    }
+
+  </div>
+
+</div>

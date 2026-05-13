@@ -1,0 +1,42 @@
+<div class="checkout-container">
+    <h1>Finalizar pedido</h1>
+    <div class="checkout-grid">
+
+        <mat-card class="form-card">
+            <h2>Datos del cliente</h2>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Nombre</mat-label>
+                <input matInput [(ngModel)]="customerName">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Teléfono</mat-label>
+                <input matInput [(ngModel)]="phone">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Dirección</mat-label>
+                <textarea matInput rows="3" [(ngModel)]="address"></textarea>
+            </mat-form-field>
+
+            <button mat-raised-button color="primary" [disabled]="loading" (click)="confirmOrder()">
+                Confirmar pedido
+            </button>
+        </mat-card>
+
+        <mat-card class="summary-card">
+            <h2>Resumen</h2>
+
+            @for (item of cartItems; track item.product.id) {
+            <div class="summary-item">
+                <span>{{ item.product.name }} x {{ item.quantity }}</span>
+                <strong>Q {{ item.product.price * item.quantity }}</strong>
+            </div>
+            }
+
+            <hr>
+            <h2>Total: Q {{ total }}</h2>
+        </mat-card>
+    </div>
+</div>

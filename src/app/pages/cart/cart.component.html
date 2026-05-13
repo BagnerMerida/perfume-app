@@ -1,0 +1,39 @@
+<div class="cart-container">
+    <h1>Carrito de compras</h1>
+    @if (cartItems.length === 0) {
+    <p>Tu carrito está vacío.</p>
+    } @else {
+    <div class="cart-grid">
+        @for (item of cartItems; track item.product.id) {
+        <mat-card class="cart-card">
+            <div class="cart-image">
+                <img [src]="item.product.mainImageUrl ? baseUrl + item.product.mainImageUrl : 'https://placehold.co/400x400?text=Perfume'"
+                    [alt]="item.product.name" />
+            </div>
+            <div class="cart-info">
+                <h3>{{ item.product.name }}</h3>
+                <p>{{ item.product.brandName }}</p>
+                <p>Cantidad: {{ item.quantity }}</p>
+                <p class="price">
+                    Q {{ item.product.price * item.quantity }}
+                </p>
+                <button mat-raised-button color="warn" (click)="removeItem(item.product.id)">
+                    Eliminar
+                </button>
+            </div>
+        </mat-card>
+        }
+    </div>
+    <div class="cart-summary">
+        <h2>Total: Q {{ total }}</h2>
+        <div class="actions">
+            <button mat-raised-button color="warn" (click)="clearCart()">
+                Vaciar carrito
+            </button>
+            <button mat-raised-button color="primary" routerLink="/checkout">
+                Finalizar pedido
+            </button>
+        </div>
+    </div>
+    }
+</div>

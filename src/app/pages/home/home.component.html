@@ -1,0 +1,61 @@
+<section class="hero">
+    <div class="hero-content">
+        <p class="eyebrow">Fragancias premium</p>
+
+        <h1>Encuentra tu aroma perfecto</h1>
+
+        <p class="subtitle">
+            Perfumes elegantes para hombre, mujer y unisex.
+        </p>
+
+        <a mat-raised-button color="primary" routerLink="/catalog">
+            Explorar catálogo
+        </a>
+    </div>
+</section>
+
+<section class="section">
+    <div class="section-header">
+        <h2>Destacados</h2>
+        <a routerLink="/catalog">Ver todos</a>
+    </div>
+
+    <div class="products-grid">
+        @for (product of featuredProducts; track product.id) {
+        <mat-card class="product-card" [routerLink]="['/product', product.slug]">
+
+            <div class="badges">
+                @if (product.isNew) {
+                <span class="badge new">Nuevo</span>
+                }
+
+                @if (product.bestSeller) {
+                <span class="badge best">Más vendido</span>
+                }
+
+                @if (product.featured) {
+                <span class="badge featured">Destacado</span>
+                }
+            </div>
+
+            <div class="image-box">
+                <img [src]="product.mainImageUrl ? baseUrl + product.mainImageUrl : 'https://placehold.co/400x400?text=Perfume'"
+                    [alt]="product.name" />
+            </div>
+
+            <mat-card-content>
+                <p class="brand">{{ product.brandName }}</p>
+                <h3>{{ product.name }}</h3>
+                <p class="price">Q {{ product.price }}</p>
+            </mat-card-content>
+
+            <mat-card-actions>
+                <a mat-raised-button color="primary" [routerLink]="['/product', product.id]">
+                    Ver producto
+                </a>
+            </mat-card-actions>
+
+        </mat-card>
+        }
+    </div>
+</section>

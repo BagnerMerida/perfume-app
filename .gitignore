@@ -40,3 +40,23 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+.idea/git_toolbox_prj.xml
+.idea/git_toolbox_blame.xml
+.idea/
+.smarttomcat/
+conf/
+logs/
+
+.DS_Store

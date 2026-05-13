@@ -1,0 +1,126 @@
+<div class="admin-product-container">
+
+    <div class="form-section">
+        <h1>Nuevo producto</h1>
+
+        <mat-card class="form-card">
+
+            <mat-form-field appearance="outline">
+                <mat-label>Nombre</mat-label>
+                <input matInput [(ngModel)]="product.name">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Marca</mat-label>
+                <mat-select [(ngModel)]="product.brandId">
+                    @for (brand of brands; track brand.id) {
+                    <mat-option [value]="brand.id">{{ brand.name }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Categoría</mat-label>
+                <mat-select [(ngModel)]="product.categoryId">
+                    @for (category of categories; track category.id) {
+                    <mat-option [value]="category.id">{{ category.name }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Género</mat-label>
+                <mat-select [(ngModel)]="product.gender">
+                    <mat-option value="MEN">Hombre</mat-option>
+                    <mat-option value="WOMEN">Mujer</mat-option>
+                    <mat-option value="UNISEX">Unisex</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Tipo de fragancia</mat-label>
+                <input matInput [(ngModel)]="product.fragranceType">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Concentración</mat-label>
+                <input matInput [(ngModel)]="product.concentration">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Precio</mat-label>
+                <input matInput type="number" [(ngModel)]="product.price">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Stock</mat-label>
+                <input matInput type="number" [(ngModel)]="product.stock">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Descripción</mat-label>
+                <textarea matInput rows="4" [(ngModel)]="product.description"></textarea>
+            </mat-form-field>
+
+            <div class="checks">
+                <mat-checkbox [(ngModel)]="product.isNew">Nuevo</mat-checkbox>
+                <mat-checkbox [(ngModel)]="product.featured">Destacado</mat-checkbox>
+                <mat-checkbox [(ngModel)]="product.bestSeller">Más vendido</mat-checkbox>
+            </div>
+
+            <input type="file" accept="image/*" (change)="onFileSelected($event)">
+
+            <button mat-raised-button color="primary" (click)="saveProduct()">
+                Guardar producto
+            </button>
+
+        </mat-card>
+    </div>
+
+    <div class="preview-section">
+        <h1>Vista previa</h1>
+
+        <mat-card class="preview-card">
+
+            <div class="badges">
+                @if (product.isNew) {
+                <span class="badge new">Nuevo</span>
+                }
+
+                @if (product.bestSeller) {
+                <span class="badge best">Más vendido</span>
+                }
+
+                @if (product.featured) {
+                <span class="badge featured">Destacado</span>
+                }
+            </div>
+
+            <div class="image-box">
+                <img [src]="imagePreview || 'https://placehold.co/500x500?text=Perfume'" alt="Vista previa">
+            </div>
+
+            <mat-card-content>
+                <p class="brand">
+                    {{ getSelectedBrandName() }}
+                </p>
+
+                <h2>{{ product.name || 'Nombre del producto' }}</h2>
+
+                <p class="description">
+                    {{ product.description || 'Descripción del producto...' }}
+                </p>
+
+                <p class="price">
+                    Q {{ product.price || 0 }}
+                </p>
+
+                <p class="stock">
+                    Stock: {{ product.stock || 0 }}
+                </p>
+            </mat-card-content>
+
+        </mat-card>
+    </div>
+
+</div>

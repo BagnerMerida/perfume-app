@@ -1,0 +1,48 @@
+<div class="detail-container">
+
+    @if (loading) {
+    <div class="loading">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Cargando producto...</p>
+    </div>
+    }
+
+    @if (product) {
+    <mat-card class="detail-card">
+
+        <div class="image-section">
+            <img [src]="product.mainImageUrl ? baseUrl + product.mainImageUrl : 'assets/no-image.png'"
+                [alt]="product.name" />
+        </div>
+
+        <div class="info-section">
+            <p class="brand">{{ product.brandName }}</p>
+
+            <h1>{{ product.name }}</h1>
+
+            <p class="category">
+                {{ product.categoryName }} · {{ product.fragranceType }}
+            </p>
+
+            <p class="description">
+                {{ product.description }}
+            </p>
+
+            <p class="price">
+                Q {{ product.price }}
+            </p>
+
+            <p class="stock">
+                Stock disponible: {{ product.stock }}
+            </p>
+            <button mat-raised-button color="primary" [disabled]="product.stock <= 0" (click)="addToCart()">
+
+                Agregar al carrito
+
+            </button>
+        </div>
+
+    </mat-card>
+    }
+
+</div>
