@@ -1,80 +1,155 @@
-<div class="catalog-container">
+<div class="catalog-page">
 
-    <h1>Catálogo de fragancias</h1>
+  <!-- Header -->
+  <div class="catalog-hero">
+    <h1>Catálogo</h1>
+    <p class="catalog-sub">{{ products.length }} fragancias disponibles</p>
+  </div>
 
-    @if (loading) {
-    <div class="loading">
-        <mat-spinner diameter="40"></mat-spinner>
-        <p>Cargando productos...</p>
+  <!-- Filters -->
+  <div class="filters-header">
+    <button class="filter-toggle" (click)="showFilters = !showFilters">
+      <mat-icon>filter_list</mat-icon>
+      <span>Filtros</span>
+      <mat-icon>{{ showFilters ? 'expand_less' : 'expand_more' }}</mat-icon>
+    </button>
+  </div>
+
+  <div class="filters-bar" [class.filters-open]="showFilters">
+
+    <div class="search-wrapper">
+      <mat-icon class="search-icon">search</mat-icon>
+      <input
+        class="search-input"
+        type="text"
+        placeholder="Buscar por nombre, marca..."
+        [(ngModel)]="search"
+        (keyup)="onFilterChange()"
+      />
+      @if (search) {
+        <button class="clear-btn" (click)="clearSearch()">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
     </div>
-    }
 
-    <div class="filters">
-        <mat-form-field appearance="outline">
-            <mat-label>Buscar</mat-label>
-            <input matInput placeholder="Dior, Chanel..." [(ngModel)]="search" (keyup)="filterProducts()" />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-            <mat-label>Género</mat-label>
-            <mat-select [(ngModel)]="selectedGender" (selectionChange)="filterProducts()">
-                <mat-option value="">
-                    Todos
-                </mat-option>
-                <mat-option value="MEN">
-                    Hombre
-                </mat-option>
-                <mat-option value="WOMEN">
-                    Mujer
-                </mat-option>
-                <mat-option value="UNISEX">
-                    Unisex
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-    </div>
-
-
-
-    <div class="products-grid">
-        @for (product of products; track product.id) {
-
-        <mat-card class="product-card" [routerLink]="['/product', product.slug]">
-
-            <div class="badges">
-                @if (product.isNew) {
-                <span class="badge new">Nuevo</span>
-                }
-
-                @if (product.bestSeller) {
-                <span class="badge best">Más vendido</span>
-                }
-
-                @if (product.featured) {
-                <span class="badge featured">Destacado</span>
-                }
-            </div>
-
-            <div class="image-box">
-                <img [src]="product.mainImageUrl ? baseUrl + product.mainImageUrl : 'assets/no-image.png'"
-                    [alt]="product.name" />
-            </div>
-
-            <mat-card-content>
-                <p class="brand">{{ product.brandName }}</p>
-                <h3>{{ product.name }}</h3>
-                <p class="description">{{ product.description }}</p>
-                <p class="price">Q {{ product.price }}</p>
-            </mat-card-content>
-
-            <mat-card-actions>
-                <button mat-raised-button color="primary">
-                    Ver producto
-                </button>
-            </mat-card-actions>
-
-        </mat-card>
-
+    <div class="filter-select">
+      <mat-icon class="filter-select-icon">category</mat-icon>
+      <select
+        class="filter-select-input"
+        [ngModel]="selectedCategoryId"
+        (ngModelChange)="selectedCategoryId = $event; onFilterChange()"
+      >
+        <option [value]="0">Categoría</option>
+        @for (cat of categories; track cat.id) {
+          <option [value]="cat.id">{{ cat.name }}</option>
         }
+      </select>
     </div>
+
+    <div class="filter-select">
+      <mat-icon class="filter-select-icon">branding_watermark</mat-icon>
+      <select
+        class="filter-select-input"
+        [ngModel]="selectedBrandId"
+        (ngModelChange)="selectedBrandId = $event; onFilterChange()"
+      >
+        <option [value]="0">Marca</option>
+        @for (brand of brands; track brand.id) {
+          <option [value]="brand.id">{{ brand.name }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="price-range">
+      <span class="price-range-label">Precio: Q{{ minPrice }} – Q{{ maxPrice }}</span>
+      <div class="price-sliders">
+        <div class="price-track">
+          <div
+            class="price-track-active"
+            [style.left.%]="(minPrice / 10000) * 100"
+            [style.width.%]="((maxPrice - minPrice) / 10000) * 100"
+          ></div>
+        </div>
+        <input
+          type="range"
+          min="0"
+          max="10000"
+          step="100"
+          [value]="minPrice"
+          (input)="minPrice = Math.min(+$any($event.target).value, maxPrice - 100)"
+          (change)="onFilterChange()"
+          class="range range-min"
+        />
+        <input
+          type="range"
+          min="0"
+          max="10000"
+          step="100"
+          [value]="maxPrice"
+          (input)="maxPrice = Math.max(+$any($event.target).value, minPrice + 100)"
+          (change)="onFilterChange()"
+          class="range range-max"
+        />
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Loading -->
+  @if (loading) {
+    <div class="loading">
+      <mat-spinner diameter="28"></mat-spinner>
+      <span>Cargando productos...</span>
+    </div>
+  }
+
+  <!-- Empty -->
+  @if (!loading && products.length === 0) {
+    <div class="empty">
+      <mat-icon>search_off</mat-icon>
+      <p>No encontramos productos con esos filtros</p>
+      <button class="reset-btn" (click)="clearSearch()">Limpiar filtros</button>
+    </div>
+  }
+
+  <!-- Grid -->
+  @if (!loading && products.length > 0) {
+    <div class="products-grid">
+      @for (product of products; track trackByProductId) {
+        <div class="product-card" [style.animation-delay]="0.45 + $index * 0.05 + 's'" [routerLink]="['/product', product.slug]">
+
+          <div class="badges">
+            @if (product.isNew) {
+              <span class="badge new">Nuevo</span>
+            }
+            @if (product.bestSeller) {
+              <span class="badge best">Más vendido</span>
+            }
+            @if (product.featured) {
+              <span class="badge featured">Destacado</span>
+            }
+          </div>
+
+          <div class="card-image">
+            <img
+              [src]="product.mainImageUrl ? baseUrl + product.mainImageUrl : 'https://placehold.co/400x400?text=Perfume'"
+              [alt]="product.name"
+            />
+          </div>
+
+          <div class="card-body">
+            <span class="card-brand">{{ product.brandName }}</span>
+            <h3 class="card-name">{{ product.name }}</h3>
+            <div class="card-row">
+              <span class="card-price">Q {{ product.price }}</span>
+              <span class="card-btn">Ver</span>
+            </div>
+          </div>
+
+        </div>
+      }
+    </div>
+  }
 
 </div>

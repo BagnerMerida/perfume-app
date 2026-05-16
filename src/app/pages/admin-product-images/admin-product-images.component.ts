@@ -1,8 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -11,11 +9,9 @@ import { ProductImage, ProductImageService } from '../../core/services/product-i
 @Component({
   selector: 'app-admin-product-images',
   standalone: true,
-  imports: [    
+  imports: [
     CommonModule,
     FormsModule,
-    MatCardModule,
-    MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
     MatCheckboxModule],
@@ -36,6 +32,8 @@ export class AdminProductImagesComponent {
 
   loading = false;
 
+  loaded = false;
+
   constructor(
     private productImageService: ProductImageService
   ) {}
@@ -47,11 +45,13 @@ export class AdminProductImagesComponent {
       next: response => {
         this.images = response;
         this.loading = false;
+        this.loaded = true;
       },
 
       error: error => {
         console.error(error);
         this.loading = false;
+        this.loaded = true;
       }
 
     });
@@ -106,7 +106,6 @@ export class AdminProductImagesComponent {
       error: error => {
         console.error(error);
         alert('Error al eliminar imagen');
-
       }
 
     });

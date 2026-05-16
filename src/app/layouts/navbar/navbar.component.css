@@ -1,21 +1,48 @@
 .navbar {
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 0 32px;
 }
 
 .brand {
-  color: white;
+  color: #1a1a1a;
   text-decoration: none;
   font-weight: 700;
-  font-size: 20px;
+  font-size: 18px;
+  letter-spacing: 0.5px;
 }
 
 .spacer {
   flex: 1 1 auto;
 }
 
-a {
-  color: white;
+.navbar a {
+  color: #555;
   text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  transition: color 0.2s;
+}
+
+.navbar a:hover {
+  color: #1a1a1a;
+}
+
+.cart-btn {
+  position: relative;
+}
+
+.cart-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e53935;
 }

@@ -1,48 +1,53 @@
 <div class="detail-container">
 
-    @if (loading) {
+  @if (loading) {
     <div class="loading">
-        <mat-spinner diameter="40"></mat-spinner>
-        <p>Cargando producto...</p>
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Cargando producto...</p>
     </div>
-    }
+  }
 
-    @if (product) {
-    <mat-card class="detail-card">
+  @if (product) {
+    <div class="detail-card">
 
-        <div class="image-section">
-            <img [src]="product.mainImageUrl ? baseUrl + product.mainImageUrl : 'assets/no-image.png'"
-                [alt]="product.name" />
+      <div class="image-section">
+        <img [src]="product.mainImageUrl ? baseUrl + product.mainImageUrl : 'assets/no-image.png'"
+          [alt]="product.name" />
+      </div>
+
+      <div class="info-section">
+        <p class="brand">{{ product.brandName }}</p>
+
+        <div class="name-row">
+          <h1>{{ product.name }}</h1>
+          <button mat-raised-button class="detail-cta detail-cta--mobile" [disabled]="product.stock <= 0" (click)="addToCart()">
+            <mat-icon>shopping_cart</mat-icon>
+          </button>
         </div>
 
-        <div class="info-section">
-            <p class="brand">{{ product.brandName }}</p>
+        <p class="category">
+          {{ product.categoryName }} · {{ product.fragranceType }}
+        </p>
 
-            <h1>{{ product.name }}</h1>
+        <p class="description">
+          {{ product.description }}
+        </p>
 
-            <p class="category">
-                {{ product.categoryName }} · {{ product.fragranceType }}
-            </p>
+        <p class="price">
+          Q {{ product.price }}
+        </p>
 
-            <p class="description">
-                {{ product.description }}
-            </p>
+        <p class="stock">
+          Stock disponible: {{ product.stock }}
+        </p>
 
-            <p class="price">
-                Q {{ product.price }}
-            </p>
+        <button mat-raised-button class="detail-cta detail-cta--desktop" [disabled]="product.stock <= 0" (click)="addToCart()">
+          <mat-icon>shopping_cart</mat-icon>
+          <span class="cta-text">Agregar al carrito</span>
+        </button>
+      </div>
 
-            <p class="stock">
-                Stock disponible: {{ product.stock }}
-            </p>
-            <button mat-raised-button color="primary" [disabled]="product.stock <= 0" (click)="addToCart()">
-
-                Agregar al carrito
-
-            </button>
-        </div>
-
-    </mat-card>
-    }
+    </div>
+  }
 
 </div>

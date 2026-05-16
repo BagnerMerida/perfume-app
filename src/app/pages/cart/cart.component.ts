@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { CartItem } from '../../models/cart-item';
 import { CartService } from '../../core/services/cart.service';
@@ -13,7 +12,6 @@ import { environment } from '../../../environments/environment';
   standalone: true,
   imports: [
     CommonModule,
-    MatCardModule,
     MatButtonModule,
     MatIconModule,
     RouterLink
@@ -22,6 +20,8 @@ import { environment } from '../../../environments/environment';
   styleUrl: './cart.component.css'
 })
 export class CartComponent implements OnInit {
+
+  Math = Math;
 
   cartItems: CartItem[] = [];
   total = 0;
@@ -43,8 +43,11 @@ export class CartComponent implements OnInit {
     this.cartService.removeFromCart(productId);
   }
 
-  clearCart(): void {
-    this.cartService.clearCart();
+  updateQuantity(productId: number, delta: number): void {
+    const item = this.cartItems.find(i => i.product.id === productId);
+    if (item) {
+      this.cartService.updateQuantity(productId, item.quantity + delta);
+    }
   }
 
 }

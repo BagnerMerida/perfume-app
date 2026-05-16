@@ -1,61 +1,124 @@
 <section class="hero">
-    <div class="hero-content">
-        <p class="eyebrow">Fragancias premium</p>
-
-        <h1>Encuentra tu aroma perfecto</h1>
-
-        <p class="subtitle">
-            Perfumes elegantes para hombre, mujer y unisex.
-        </p>
-
-        <a mat-raised-button color="primary" routerLink="/catalog">
-            Explorar catálogo
-        </a>
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <span class="hero-tagline">Fragancias premium</span>
+    <h1 class="hero-title">Encuentra tu<br/>aroma perfecto</h1>
+    <p class="hero-sub">
+      Perfumes elegantes para hombre, mujer y unisex.
+    </p>
+    <div class="hero-search">
+      <input
+        class="search-input"
+        type="text"
+        placeholder="Buscar perfume..."
+        [(ngModel)]="searchTerm"
+        (keyup.enter)="search()"
+      />
+      <button class="search-btn" (click)="search()">
+        <mat-icon>search</mat-icon>
+      </button>
     </div>
+    <div class="hero-cta-wrapper">
+      <a mat-raised-button class="hero-cta" routerLink="/catalog">
+        Explorar catálogo
+      </a>
+    </div>
+  </div>
 </section>
 
-<section class="section">
-    <div class="section-header">
-        <h2>Destacados</h2>
-        <a routerLink="/catalog">Ver todos</a>
+<section class="slider-section">
+  <div class="slider-header">
+    <div>
+      <span class="slider-label">Colección</span>
+      <h2>Descubre nuestros productos</h2>
     </div>
+    <a routerLink="/catalog" class="slider-link">Ver todos →</a>
+  </div>
 
-    <div class="products-grid">
-        @for (product of featuredProducts; track product.id) {
-        <mat-card class="product-card" [routerLink]="['/product', product.slug]">
+  <div class="filter-pills">
+    <span
+      class="pill-slider"
+      [style.transform]="'translateX(' + filterIndex * 100 + '%)'"
+    ></span>
+    <button
+      class="pill"
+      [class.active]="activeFilter === 'featured'"
+      (click)="setFilter('featured')"
+    >Destacados</button>
+    <button
+      class="pill"
+      [class.active]="activeFilter === 'new'"
+      (click)="setFilter('new')"
+    >Nuevos</button>
+    <button
+      class="pill"
+      [class.active]="activeFilter === 'bestSeller'"
+      (click)="setFilter('bestSeller')"
+    >Más vendidos</button>
+  </div>
 
+  <div class="slider-wrapper">
+    <button
+      class="arrow arrow-left"
+      [class.hidden]="atStart"
+      (click)="prev()"
+    >
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+
+    <div class="slider-viewport">
+      <div
+        class="slider-track"
+        [style.transform]="'translateX(-' + scrollIndex * (100 / itemsPerPage) + '%)'"
+      >
+        @for (product of sliderProducts; track trackByProductId) {
+          <div class="slider-slide" [routerLink]="['/product', product.slug]">
             <div class="badges">
-                @if (product.isNew) {
+              @if (product.isNew) {
                 <span class="badge new">Nuevo</span>
-                }
-
-                @if (product.bestSeller) {
+              }
+              @if (product.bestSeller) {
                 <span class="badge best">Más vendido</span>
-                }
-
-                @if (product.featured) {
+              }
+              @if (product.featured) {
                 <span class="badge featured">Destacado</span>
-                }
+              }
             </div>
-
-            <div class="image-box">
-                <img [src]="product.mainImageUrl ? baseUrl + product.mainImageUrl : 'https://placehold.co/400x400?text=Perfume'"
-                    [alt]="product.name" />
+            <div class="slide-image">
+              <img
+                [src]="product.mainImageUrl ? baseUrl + product.mainImageUrl : 'https://placehold.co/400x400?text=Perfume'"
+                [alt]="product.name"
+              />
             </div>
-
-            <mat-card-content>
-                <p class="brand">{{ product.brandName }}</p>
-                <h3>{{ product.name }}</h3>
-                <p class="price">Q {{ product.price }}</p>
-            </mat-card-content>
-
-            <mat-card-actions>
-                <a mat-raised-button color="primary" [routerLink]="['/product', product.id]">
-                    Ver producto
-                </a>
-            </mat-card-actions>
-
-        </mat-card>
+            <div class="slide-body">
+              <span class="slide-brand">{{ product.brandName }}</span>
+              <span class="slide-name">{{ product.name }}</span>
+              <div class="slide-row">
+                <span class="slide-price">Q {{ product.price }}</span>
+                <span class="slide-btn">Ver</span>
+              </div>
+            </div>
+          </div>
         }
+      </div>
     </div>
+
+    <button
+      class="arrow arrow-right"
+      [class.hidden]="atEnd"
+      (click)="next()"
+    >
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+
+  <div class="slider-dots">
+    @for (item of [].constructor(maxScrollIndex + 1); track $index) {
+      <span
+        class="dot"
+        [class.active]="$index === scrollIndex"
+        (click)="scrollIndex = $index"
+      ></span>
+    }
+  </div>
 </section>

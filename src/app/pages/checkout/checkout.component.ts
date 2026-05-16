@@ -2,9 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CartItem } from '../../models/cart-item';
 import { CartService } from '../../core/services/cart.service';
 import { OrderService } from '../../core/services/order.service';
@@ -17,10 +17,10 @@ import { OrderRequest } from '../../models/order-request';
   imports: [
     CommonModule,
     FormsModule,
-    MatCardModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.css'
@@ -85,4 +85,13 @@ export class CheckoutComponent implements OnInit {
     });
   }
 
+  get isFormValid(): boolean {
+    return !!(
+      this.customerName.trim() &&
+      this.phone.trim() &&
+      this.address.trim() &&
+      this.cartItems.length > 0
+    );
+  }
 }
+

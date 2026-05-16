@@ -1,39 +1,73 @@
 <div class="cart-container">
+
+  <div class="cart-header">
     <h1>Carrito de compras</h1>
-    @if (cartItems.length === 0) {
-    <p>Tu carrito está vacío.</p>
-    } @else {
-    <div class="cart-grid">
-        @for (item of cartItems; track item.product.id) {
-        <mat-card class="cart-card">
-            <div class="cart-image">
-                <img [src]="item.product.mainImageUrl ? baseUrl + item.product.mainImageUrl : 'https://placehold.co/400x400?text=Perfume'"
-                    [alt]="item.product.name" />
+    <p class="cart-sub">{{ cartItems.length }} {{ cartItems.length === 1 ? 'producto' : 'productos' }}</p>
+  </div>
+
+  @if (cartItems.length === 0) {
+    <div class="cart-empty">
+      <mat-icon>shopping_cart</mat-icon>
+      <p>Tu carrito está vacío</p>
+      <a mat-raised-button class="go-catalog" routerLink="/catalog">Explorar catálogo</a>
+    </div>
+  }
+
+  @if (cartItems.length > 0) {
+    <div class="cart-layout">
+
+      <div class="cart-items">
+        @for (item of cartItems; track item.product.id; let i = $index) {
+          <div class="cart-item" [style.animation-delay]="i * 0.08 + 's'">
+            <div class="item-image">
+              <img [src]="item.product.mainImageUrl ? baseUrl + item.product.mainImageUrl : 'https://placehold.co/400x400?text=Perfume'"
+                [alt]="item.product.name" />
             </div>
-            <div class="cart-info">
-                <h3>{{ item.product.name }}</h3>
-                <p>{{ item.product.brandName }}</p>
-                <p>Cantidad: {{ item.quantity }}</p>
-                <p class="price">
-                    Q {{ item.product.price * item.quantity }}
-                </p>
-                <button mat-raised-button color="warn" (click)="removeItem(item.product.id)">
-                    Eliminar
+            <div class="item-info">
+              <span class="item-brand">{{ item.product.brandName }}</span>
+              <h3 class="item-name">{{ item.product.name }}</h3>
+              <span class="item-price">Q {{ item.product.price }}</span>
+            </div>
+            <div class="item-actions">
+              <div class="qty-controls">
+                <button class="qty-btn" (click)="updateQuantity(item.product.id, -1)" [disabled]="item.quantity <= 1">
+                  <mat-icon>remove</mat-icon>
                 </button>
+                <span class="qty-value">{{ item.quantity }}</span>
+                <button class="qty-btn" (click)="updateQuantity(item.product.id, 1)">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </div>
+              <span class="item-subtotal">Q {{ item.product.price * item.quantity }}</span>
+              <button class="remove-btn" (click)="removeItem(item.product.id)">
+                <mat-icon>close</mat-icon>
+              </button>
             </div>
-        </mat-card>
+          </div>
         }
-    </div>
-    <div class="cart-summary">
-        <h2>Total: Q {{ total }}</h2>
-        <div class="actions">
-            <button mat-raised-button color="warn" (click)="clearCart()">
-                Vaciar carrito
-            </button>
-            <button mat-raised-button color="primary" routerLink="/checkout">
-                Finalizar pedido
-            </button>
+      </div>
+
+      <div class="cart-summary">
+        <h2>Resumen</h2>
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span>Q {{ total }}</span>
         </div>
+        <div class="summary-row">
+          <span>Envío</span>
+          <span>Calculado al finalizar</span>
+        </div>
+        <div class="summary-divider"></div>
+        <div class="summary-row summary-total">
+          <span>Total</span>
+          <span>Q {{ total }}</span>
+        </div>
+        <button mat-raised-button class="checkout-btn" routerLink="/checkout">
+          Finalizar pedido
+        </button>
+      </div>
+
     </div>
-    }
+  }
+
 </div>
