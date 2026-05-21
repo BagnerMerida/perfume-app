@@ -26,41 +26,54 @@ export interface ResetPasswordRequest {
 })
 export class AuthService {
 
-  private readonly apiUrl = `${environment.baseUrl}/auth`;
+  apiUrl = environment.baseUrl + "/auth";
+  baseUrl = environment.apiUrl + "email"
 
   private readonly tokenKey = 'perfume_admin_token';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   login(request: LoginRequest): Observable<JwtResponse> {
     return this.http.post<JwtResponse>(`${this.apiUrl}/login`, request);
   }
 
   forgotPassword(request: ForgotPasswordRequest): Observable<string> {
-    return this.http.post(`${this.apiUrl}/forgot-password`, request, {
+    return this.http.post(`${this.baseUrl}/forgot-password`, request, {
       responseType: 'text'
     });
   }
 
   resetPassword(request: ResetPasswordRequest): Observable<string> {
-    return this.http.post(`${this.apiUrl}/reset-password`, request, {
+    return this.http.post(`${this.baseUrl}/reset-password`, request, {
       responseType: 'text'
     });
   }
 
+  private isBrowser(): boolean {
+    return typeof window !== 'undefined' && typeof window.sessionStorage !== 'undefined';
+  }
+
   saveToken(token: string): void {
-    localStorage.setItem(this.tokenKey, token);
+    if (this.isBrowser()) {
+      sessionStorage.setItem(this.tokenKey, token);
+    }
   }
 
   getToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
+    if (!this.isBrowser()) {
+      return null;
+    }
+    return sessionStorage.getItem(this.tokenKey);
   }
 
   logout(): void {
-    localStorage.removeItem(this.tokenKey);
+    if (this.isBrowser()) {
+      sessionStorage.removeItem(this.tokenKey);
+    }
   }
 
   isLoggedIn(): boolean {
     return !!this.getToken();
   }
+
 }
