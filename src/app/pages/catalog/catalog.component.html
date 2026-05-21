@@ -34,6 +34,20 @@
     </div>
 
     <div class="filter-select">
+      <mat-icon class="filter-select-icon">wc</mat-icon>
+      <select
+        class="filter-select-input"
+        [ngModel]="selectedGender"
+        (ngModelChange)="onGenderChange($event)"
+      >
+        <option value="">Género</option>
+        <option value="MEN">Hombre</option>
+        <option value="WOMEN">Mujer</option>
+        <option value="UNISEX">Unisex</option>
+      </select>
+    </div>
+
+    <div class="filter-select">
       <mat-icon class="filter-select-icon">category</mat-icon>
       <select
         class="filter-select-input"
@@ -117,36 +131,8 @@
   @if (!loading && products.length > 0) {
     <div class="products-grid">
       @for (product of products; track trackByProductId) {
-        <div class="product-card" [style.animation-delay]="0.45 + $index * 0.05 + 's'" [routerLink]="['/product', product.slug]">
-
-          <div class="badges">
-            @if (product.isNew) {
-              <span class="badge new">Nuevo</span>
-            }
-            @if (product.bestSeller) {
-              <span class="badge best">Más vendido</span>
-            }
-            @if (product.featured) {
-              <span class="badge featured">Destacado</span>
-            }
-          </div>
-
-          <div class="card-image">
-            <img
-              [src]="product.mainImageUrl ? baseUrl + product.mainImageUrl : 'https://placehold.co/400x400?text=Perfume'"
-              [alt]="product.name"
-            />
-          </div>
-
-          <div class="card-body">
-            <span class="card-brand">{{ product.brandName }}</span>
-            <h3 class="card-name">{{ product.name }}</h3>
-            <div class="card-row">
-              <span class="card-price">Q {{ product.price }}</span>
-              <span class="card-btn">Ver</span>
-            </div>
-          </div>
-
+        <div class="product-card" [style.animation-delay]="0.45 + $index * 0.05 + 's'">
+          <app-product-card [product]="product" />
         </div>
       }
     </div>

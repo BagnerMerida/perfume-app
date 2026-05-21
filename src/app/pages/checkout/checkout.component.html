@@ -1,70 +1,91 @@
-<div class="checkout-container">
-
-  <div class="checkout-header">
-    <h1>Finalizar pedido</h1>
-    <p class="checkout-sub">Completa tus datos para confirmar la compra</p>
+@if (success) {
+  <div class="success-container">
+    <div class="success-icon">
+      <mat-icon>check_circle</mat-icon>
+    </div>
+    <h1>Pedido confirmado</h1>
+    <p>Gracias por tu compra, <strong>{{ customerName }}</strong>. Te contactaremos al <strong>{{ phone }}</strong> para coordinar la entrega.</p>
+    <app-button
+      variant="secondary"
+      icon="home"
+      iconPosition="start"
+      (clicked)="goHome()"
+    >
+      Volver al inicio
+    </app-button>
   </div>
+} @else {
+  <div class="checkout-container">
 
-  <div class="checkout-layout">
-
-    <div class="form-section">
-      <div class="section-card">
-        <h2>Datos del cliente</h2>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Nombre</mat-label>
-          <input matInput [(ngModel)]="customerName">
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Teléfono</mat-label>
-          <input matInput [(ngModel)]="phone">
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Dirección</mat-label>
-          <textarea matInput rows="3" [(ngModel)]="address"></textarea>
-        </mat-form-field>
-
-        <button mat-raised-button class="confirm-btn" [disabled]="loading || !isFormValid" (click)="confirmOrder()">
-          @if (loading) {
-            <mat-spinner diameter="18"></mat-spinner>
-            <span>Procesando...</span>
-          } @else {
-            Confirmar pedido
-          }
-        </button>
-      </div>
+    <div class="checkout-header">
+      <h1>Finalizar pedido</h1>
+      <p class="checkout-sub">Completa tus datos para confirmar la compra</p>
     </div>
 
-    <div class="summary-section">
-      <div class="section-card">
-        <h2>Resumen</h2>
+    <div class="checkout-layout">
 
-        @for (item of cartItems; track item.product.id) {
-          <div class="summary-item">
-            <div class="summary-item-info">
-              <span class="summary-item-name">{{ item.product.name }}</span>
-              <span class="summary-item-brand">{{ item.product.brandName }}</span>
-            </div>
-            <span class="summary-item-qty">x{{ item.quantity }}</span>
-            <span class="summary-item-price">Q {{ item.product.price * item.quantity }}</span>
-          </div>
-        }
+      <div class="form-section">
+        <div class="section-card">
+          <h2>Datos del cliente</h2>
 
-        @if (cartItems.length === 0) {
-          <p class="summary-empty">No hay productos en el carrito</p>
-        }
+          <mat-form-field appearance="outline">
+            <mat-label>Nombre</mat-label>
+            <input matInput [(ngModel)]="customerName">
+          </mat-form-field>
 
-        <div class="summary-divider"></div>
+          <mat-form-field appearance="outline">
+            <mat-label>Teléfono</mat-label>
+            <input matInput [(ngModel)]="phone">
+          </mat-form-field>
 
-        <div class="summary-total-row">
-          <span>Total</span>
-          <span>Q {{ total }}</span>
+          <mat-form-field appearance="outline">
+            <mat-label>Dirección</mat-label>
+            <textarea matInput rows="3" [(ngModel)]="address"></textarea>
+          </mat-form-field>
+
+          <app-button
+            variant="primary"
+            [disabled]="loading || !isFormValid"
+            [loading]="loading"
+            icon="check"
+            iconPosition="start"
+            (clicked)="confirmOrder()"
+            [fullWidth]="true"
+          >
+            Confirmar pedido
+          </app-button>
         </div>
       </div>
+
+      <div class="summary-section">
+        <div class="section-card">
+          <h2>Resumen</h2>
+
+          @for (item of cartItems; track item.product.id) {
+            <div class="summary-item">
+              <div class="summary-item-info">
+                <span class="summary-item-name">{{ item.product.name }}</span>
+                <span class="summary-item-brand">{{ item.product.brandName }}</span>
+              </div>
+              <span class="summary-item-qty">x{{ item.quantity }}</span>
+              <span class="summary-item-price">Q {{ item.product.price * item.quantity }}</span>
+            </div>
+          }
+
+          @if (cartItems.length === 0) {
+            <p class="summary-empty">No hay productos en el carrito</p>
+          }
+
+          <div class="summary-divider"></div>
+
+          <div class="summary-total-row">
+            <span>Total</span>
+            <span>Q {{ total }}</span>
+          </div>
+        </div>
+      </div>
+
     </div>
 
   </div>
-
-</div>
+}

@@ -1,18 +1,16 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { Subject, takeUntil } from 'rxjs';
 import { CartService } from '../../core/services/cart.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
   imports: [
     RouterLink,
-    MatToolbarModule,
-    MatButtonModule,
+    RouterLinkActive,
     MatIconModule
   ],
   templateUrl: './navbar.component.html',
@@ -21,9 +19,13 @@ import { CartService } from '../../core/services/cart.service';
 export class NavbarComponent implements OnInit, OnDestroy {
 
   cartCount = 0;
+  menuOpen = false;
   private destroy$ = new Subject<void>();
 
-  constructor(private cartService: CartService) {}
+  constructor(
+    private cartService: CartService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.cartService.cartItems$
@@ -38,4 +40,15 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  toggleMenu(): void {
+    this.menuOpen = !this.menuOpen;
+  }
+
+  closeMenu(): void {
+    this.menuOpen = false;
+  }
+
+  goToCart(): void {
+    this.router.navigate(['/cart']);
+  }
 }

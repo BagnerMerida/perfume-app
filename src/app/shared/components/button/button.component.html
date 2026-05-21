@@ -1,0 +1,52 @@
+<ng-template #content>
+  <span class="btn-icon-start" *ngIf="icon && iconPosition === 'start'">
+    <mat-icon *ngIf="!loading">{{ icon }}</mat-icon>
+    <mat-icon *ngIf="loading" class="spinner">hourglass_empty</mat-icon>
+  </span>
+  <ng-content></ng-content>
+  <span class="btn-icon-end" *ngIf="icon && iconPosition === 'end'">
+    <mat-icon *ngIf="!loading">{{ icon }}</mat-icon>
+    <mat-icon *ngIf="loading" class="spinner">hourglass_empty</mat-icon>
+  </span>
+</ng-template>
+
+<button
+  *ngIf="!isLink && !routerLink && !href"
+  [class]="buttonClasses"
+  [type]="type"
+  [disabled]="disabled || loading"
+  (click)="onClick()"
+>
+  <ng-container *ngTemplateOutlet="content"></ng-container>
+</button>
+
+<a
+  *ngIf="!isLink && routerLink"
+  [class]="buttonClasses"
+  [routerLink]="routerLink"
+  role="button"
+  [attr.aria-disabled]="disabled || loading"
+>
+  <ng-container *ngTemplateOutlet="content"></ng-container>
+</a>
+
+<a
+  *ngIf="!isLink && href && !routerLink"
+  [class]="buttonClasses"
+  [href]="href"
+  [target]="target"
+  role="button"
+  [attr.aria-disabled]="disabled || loading"
+>
+  <ng-container *ngTemplateOutlet="content"></ng-container>
+</a>
+
+<a
+  *ngIf="isLink"
+  [class]="buttonClasses"
+  role="button"
+  [attr.aria-disabled]="disabled || loading"
+>
+  <ng-container *ngTemplateOutlet="content"></ng-container>
+</a>
+

@@ -4,7 +4,6 @@ import { RouterLink, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -12,7 +11,24 @@ import { ProductService } from '../../core/services/product.service';
 import { Product } from '../../models/product';
 import { environment } from '../../../environments/environment';
 
+import { FeatureCardComponent } from '../../features/feature-card/feature-card.component';
+import { CategoryCardComponent } from '../../features/category-card/category-card.component';
+import { ProductCardComponent } from '../../shared/components';
+import { ButtonComponent } from '../../shared/components';
+
 type FilterKey = 'featured' | 'new' | 'bestSeller';
+
+interface FeatureItem {
+  icon: string;
+  title: string;
+  description: string;
+}
+
+interface CategoryItem {
+  value: string;
+  label: string;
+  description: string;
+}
 
 @Component({
   selector: 'app-home',
@@ -22,9 +38,12 @@ type FilterKey = 'featured' | 'new' | 'bestSeller';
     RouterLink,
     FormsModule,
     MatButtonModule,
-    MatCardModule,
     MatProgressSpinnerModule,
-    MatIconModule
+    MatIconModule,
+    FeatureCardComponent,
+    CategoryCardComponent,
+    ProductCardComponent,
+    ButtonComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
@@ -42,6 +61,42 @@ export class HomeComponent implements OnInit {
   itemsPerPage = 4;
 
   baseUrl = environment.baseUrl;
+
+  features: FeatureItem[] = [
+    {
+      icon: 'verified',
+      title: '100% Auténticos',
+      description: 'Todos nuestros productos son originales y certificados.'
+    },
+    {
+      icon: 'local_shipping',
+      title: 'Envío Rápido',
+      description: 'Recibe tu pedido en 24-72 horas a todo el país.'
+    },
+    {
+      icon: 'replay',
+      title: 'Devoluciones Fáciles',
+      description: '30 días para devoluciones sin preguntas.'
+    }
+  ];
+
+  categories: CategoryItem[] = [
+    {
+      value: 'MEN',
+      label: 'Hombre',
+      description: 'Fragancias audaces y sofisticadas'
+    },
+    {
+      value: 'WOMEN',
+      label: 'Mujer',
+      description: 'Bouquets florales y orientales'
+    },
+    {
+      value: 'UNISEX',
+      label: 'Unisex',
+      description: 'Para todos, sin fronteras'
+    }
+  ];
 
   constructor(
     private productService: ProductService,

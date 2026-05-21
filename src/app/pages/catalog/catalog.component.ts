@@ -5,26 +5,25 @@ import { BrandService } from '../../core/services/brand.service';
 import { CategoryService } from '../../core/services/category.service';
 import { Brand } from '../../models/brand';
 import { Category } from '../../models/category';
-import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { environment } from '../../../environments/environment';
+import { ProductCardComponent } from '../../shared/components';
 
 @Component({
   selector: 'app-catalog',
   standalone: true,
   imports: [
     CommonModule,
-    MatCardModule,
     MatButtonModule,
     MatProgressSpinnerModule,
     RouterLink,
     FormsModule,
-    MatIconModule
+    MatIconModule,
+    ProductCardComponent
   ],
   templateUrl: './catalog.component.html',
   styleUrl: './catalog.component.css'
@@ -40,13 +39,12 @@ export class CatalogComponent implements OnInit {
 
   loading = false;
   search = '';
+  selectedGender = '';
   selectedBrandId = 0;
   selectedCategoryId = 0;
   minPrice = 0;
   maxPrice = 10000;
   showFilters = false;
-
-  baseUrl = environment.baseUrl;
 
   constructor(
     private productService: ProductService,
@@ -61,17 +59,22 @@ export class CatalogComponent implements OnInit {
     this.loadCategories();
 
     const searchParam = this.route.snapshot.queryParams['search'];
+    const genderParam = this.route.snapshot.queryParams['gender'];
     if (searchParam) {
       this.search = searchParam;
-      this.filterProducts();
-    } else {
-      this.loadProducts();
     }
+    if (genderParam) {
+      this.selectedGender = genderParam;
+    }
+    this.loadProducts(this.selectedGender || undefined);
   }
 
-  loadProducts(): void {
+  loadProducts(gender?: string): void {
     this.loading = true;
-    this.productService.findAll().subscribe({
+    const obs = gender
+      ? this.productService.findByGender(gender as 'MEN' | 'WOMEN' | 'UNISEX')
+      : this.productService.findAll();
+    obs.subscribe({
       next: (response) => {
         this.allProducts = response;
         this.applyFilters();
@@ -137,12 +140,18 @@ export class CatalogComponent implements OnInit {
     }
   }
 
+  onGenderChange(gender: string): void {
+    this.selectedGender = gender;
+    this.loadProducts(gender || undefined);
+  }
+
   onFilterChange(): void {
     this.filterProducts();
   }
 
   clearSearch(): void {
     this.search = '';
+    this.selectedGender = '';
     this.selectedBrandId = 0;
     this.selectedCategoryId = 0;
     this.minPrice = 0;
