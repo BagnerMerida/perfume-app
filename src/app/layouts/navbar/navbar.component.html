@@ -23,15 +23,6 @@
         routerLinkActive="active"
         (click)="closeMenu()"
       >Catálogo</a>
-      <a
-        routerLink="/admin/products/new"
-        routerLinkActive="active"
-        class="admin-link"
-        (click)="closeMenu()"
-      >
-        <mat-icon>shield</mat-icon>
-        <span>Admin</span>
-      </a>
     </nav>
 
     <!-- Acciones derecha -->
@@ -80,14 +71,6 @@
           (click)="closeMenu()"
         >Catálogo</a>
         <div class="mobile-divider"></div>
-        <a
-          routerLink="/admin/products/new"
-          class="mobile-admin"
-          (click)="closeMenu()"
-        >
-          <mat-icon>shield</mat-icon>
-          Panel Administrador
-        </a>
       </nav>
     </div>
   }

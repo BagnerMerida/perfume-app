@@ -49,16 +49,27 @@ export class AuthService {
     });
   }
 
+  private isBrowser(): boolean {
+    return typeof window !== 'undefined' && typeof window.sessionStorage !== 'undefined';
+  }
+
   saveToken(token: string): void {
-    sessionStorage.setItem(this.tokenKey, token);
+    if (this.isBrowser()) {
+      sessionStorage.setItem(this.tokenKey, token);
+    }
   }
 
   getToken(): string | null {
+    if (!this.isBrowser()) {
+      return null;
+    }
     return sessionStorage.getItem(this.tokenKey);
   }
 
   logout(): void {
-    sessionStorage.removeItem(this.tokenKey);
+    if (this.isBrowser()) {
+      sessionStorage.removeItem(this.tokenKey);
+    }
   }
 
   isLoggedIn(): boolean {
