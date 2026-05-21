@@ -21,7 +21,7 @@ export class AppComponent {
     this.router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd)
     ).subscribe(event => {
-      this.showNavbar = event.urlAfterRedirects !== '/login';
+      this.showNavbar = !['/login', '/forgot-password'].includes(event.urlAfterRedirects);
     });
   }
 }
