@@ -1,0 +1,29 @@
+<div class="qty-selector" [ngClass]="'size-' + size">
+  <button
+    class="qty-btn"
+    [disabled]="!canDecrease"
+    (click)="decrease()"
+    aria-label="Disminuir cantidad"
+  >
+    <mat-icon>remove</mat-icon>
+  </button>
+
+  <input
+    type="number"
+    class="qty-input"
+    [value]="quantity"
+    [min]="min"
+    [max]="max"
+    (change)="handleChange($event)"
+    readonly
+  />
+
+  <button
+    class="qty-btn"
+    [disabled]="!canIncrease"
+    (click)="increase()"
+    aria-label="Aumentar cantidad"
+  >
+    <mat-icon>add</mat-icon>
+  </button>
+</div>

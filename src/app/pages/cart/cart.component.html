@@ -1,0 +1,121 @@
+<div class="cart-page">
+
+  <!-- Empty -->
+  @if (cartItems.length === 0) {
+    <app-empty-state
+      icon="shopping_cart"
+      title="Tu carrito está vacío"
+      description="Agrega algunos perfumes desde el catálogo para comenzar."
+      actionLabel="Ir al catálogo"
+      actionIcon="arrow_forward"
+      routerLink="/catalog"
+    />
+  }
+
+  @if (cartItems.length > 0) {
+    <!-- Header -->
+    <div class="cart-header">
+      <h1>Carrito de compras</h1>
+      <app-button
+        variant="secondary"
+        icon="delete_outline"
+        (clicked)="clearCart()"
+      >
+        Vaciar carrito
+      </app-button>
+    </div>
+
+    <div class="cart-layout">
+      <!-- Items -->
+      <div class="cart-items">
+        @for (item of cartItems; track item.product.id) {
+          <article class="cart-item">
+            <!-- Imagen -->
+            <a [routerLink]="['/product', item.product.slug]" class="item-image">
+              <img [src]="imageUrl(item)" [alt]="item.product.name" />
+            </a>
+
+            <!-- Info -->
+            <div class="item-info">
+              <span class="item-brand">{{ item.product.brandName }}</span>
+              <a [routerLink]="['/product', item.product.slug]" class="item-name">
+                {{ item.product.name }}
+              </a>
+              <span class="item-meta">{{ item.product.concentration }}</span>
+
+              <div class="item-footer">
+                <!-- Cantidad -->
+                <app-quantity-selector
+                  [quantity]="item.quantity"
+                  [max]="item.product.stock"
+                  (quantityChange)="updateQuantity(item.product.id, $event)"
+                />
+
+                <!-- Subtotal + eliminar -->
+                <div class="item-actions">
+                  <span class="item-subtotal">Q {{ subtotal(item) }}</span>
+                  <button
+                    class="remove-btn"
+                    (click)="removeItem(item.product.id, item.product.name)"
+                    attr.aria-label="Eliminar {{ item.product.name }}"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+
+      <!-- Resumen -->
+      <aside class="cart-summary">
+        <h2>Resumen</h2>
+
+        <!-- Envío gratis -->
+        <div class="shipping-info">
+          @if (shippingFree) {
+          <!-- <span class="shipping-free">✓ Tienes envío gratuito</span>-->
+          } @else {
+            <span class="shipping-pending">
+              Agrega Q{{ remainingForFreeShipping }} más para
+              <strong>envío gratis</strong>
+            </span>
+          }
+        </div>
+
+        <!-- Totales -->
+        <div class="totals">
+          <div class="total-row">
+            <span>Subtotal</span>
+            <span>Q{{ totalPrice }}</span>
+          </div>
+          <div class="total-row">
+            <span>Envío</span>
+            <span>{{ shippingFree ? 'Gratis' : 'Q5.99' }}</span>
+          </div>
+          <div class="total-divider"></div>
+          <div class="total-row total-final">
+            <span>Total</span>
+            <span>Q{{ totalWithShipping }}</span>
+          </div>
+        </div>
+
+        <app-button
+          variant="primary"
+          icon="shopping_bag"
+          iconPosition="start"
+          [fullWidth]="true"
+          routerLink="/checkout"
+        >
+          Finalizar pedido
+        </app-button>
+
+        <a class="continue-link" routerLink="/catalog">
+          Continuar comprando
+        </a>
+      </aside>
+    </div>
+  }
+
+</div>

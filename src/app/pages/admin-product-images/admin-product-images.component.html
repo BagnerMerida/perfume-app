@@ -1,0 +1,65 @@
+<div class="admin-container">
+
+  <div class="admin-header">
+    <h1>Administrar imágenes</h1>
+    <p class="admin-sub">Busca y gestiona las imágenes de un producto</p>
+  </div>
+
+  <div class="admin-content">
+
+    <div class="section-card search-card">
+      <h2>Buscar producto</h2>
+      <div class="search-row">
+        <mat-form-field appearance="outline">
+          <mat-label>ID del producto</mat-label>
+          <input matInput type="number" [(ngModel)]="productId">
+        </mat-form-field>
+        <button class="action-btn" (click)="loadImages()" [disabled]="!productId">
+          Cargar imágenes
+        </button>
+      </div>
+    </div>
+
+    @if (images.length > 0) {
+
+    <div class="section-card upload-card">
+      <h2>Subir nueva imagen</h2>
+      <div class="upload-row">
+        <input type="file" accept="image/*" (change)="onFileSelected($event)" class="file-input">
+        <mat-checkbox [(ngModel)]="mainImage">Imagen principal</mat-checkbox>
+        <mat-form-field appearance="outline" class="order-field">
+          <mat-label>Orden</mat-label>
+          <input matInput type="number" [(ngModel)]="displayOrder">
+        </mat-form-field>
+        <button class="action-btn upload-btn" (click)="uploadImage()" [disabled]="!selectedFile">
+          Subir imagen
+        </button>
+      </div>
+    </div>
+
+    <div class="images-grid">
+      @for (image of images; track image.id) {
+      <div class="image-card">
+        <div class="image-box">
+          <img [src]="'http://localhost:8080/perfume' + image.imageUrl" [alt]="'Imagen producto ' + productId">
+        </div>
+        <div class="image-info">
+          <span class="image-tag" [class.main-tag]="image.mainImage">
+            {{ image.mainImage ? 'Principal' : 'Secundaria' }}
+          </span>
+          <span class="image-order">Orden: {{ image.displayOrder }}</span>
+        </div>
+        <button class="delete-btn" (click)="deleteImage(image.id)">
+          Eliminar
+        </button>
+      </div>
+      }
+    </div>
+
+    } @else if (loaded) {
+    <p class="empty-msg">El producto no tiene imágenes. Sube la primera usando el formulario de arriba.</p>
+    }
+
+  </div>
+
+</div>
