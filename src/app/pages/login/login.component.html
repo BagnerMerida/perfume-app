@@ -1,34 +1,131 @@
-<div class="login-container">
-
+﻿<div class="login-screen">
+  <div class="login-overlay"></div>
+  <div class="login-container">
     <mat-card class="login-card">
-
-        <h1>Admin Perfume</h1>
-        <p>Ingresa tus credenciales para administrar la tienda.</p>
-
-        @if (errorMessage) {
-        <div class="error">
-            {{ errorMessage }}
+      <ng-container *ngIf="view === 'login'">
+        <div class="login-head">
+          <div class="brand-mark">PF</div>
+          <div>
+            <span class="brand-title">Perfumería</span>
+            <p class="brand-note">Inicio de sesión administrativo</p>
+          </div>
         </div>
-        }
 
-        <mat-form-field appearance="outline">
+        <!-- <p class="login-intro">Accede a tu panel para gestionar productos, pedidos y todo el contenido de la tienda.</p> -->
+      </ng-container>
+
+      <ng-container *ngIf="view === 'login'">
+        <div *ngIf="errorMessage" class="login-error">
+          {{ errorMessage }}
+        </div>
+
+        <form (ngSubmit)="login()" class="login-form" autocomplete="off" novalidate>
+          <mat-form-field appearance="outline">
             <mat-label>Usuario</mat-label>
-            <input matInput [(ngModel)]="username">
-        </mat-form-field>
+            <input
+              matInput
+              name="username"
+              autocomplete="username"
+              [(ngModel)]="username"
+              placeholder="Ej. admin"
+            />
+          </mat-form-field>
 
-        <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" class="password-field">
             <mat-label>Contraseña</mat-label>
-            <input matInput type="password" [(ngModel)]="password" (keyup.enter)="login()">
-        </mat-form-field>
+            <input
+              matInput
+              name="password"
+              autocomplete="current-password"
+              [type]="showPassword ? 'text' : 'password'"
+              [(ngModel)]="password"
+              placeholder="••••••••"
+            />
+            <button
+              type="button"
+              mat-icon-button
+              matSuffix
+              class="password-toggle"
+              (click)="togglePassword()"
+              [attr.aria-label]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+            >
+              <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </mat-form-field>
 
-        <button mat-raised-button color="primary" [disabled]="loading" (click)="login()">
-            Iniciar sesión
-        </button>
+          <div class="login-meta">
+            <button type="button" class="link-button" (click)="switchToRecovery()">
+              ¿Olvidaste tu contraseña?
+            </button>
+          </div>
 
-        <a routerLink="/forgot-password">
-            ¿Olvidaste tu contraseña?
-        </a>
+          <app-button
+            type="submit"
+            variant="primary"
+            [fullWidth]="true"
+            [loading]="loading"
+            [disabled]="loading"
+          >
+            {{ loading ? 'Verificando...' : 'Ingresar' }}
+          </app-button>
+        </form>
 
+        <!--<p class="login-footer">
+         Accede a tu panel para gestionar productos, pedidos y todo el contenido de la tienda.
+        </p>-->
+          </ng-container>
+
+      <ng-container *ngIf="view === 'recovery'">
+        <button type="button" class="back-link" (click)="backToLogin()">← Volver</button>
+
+        <h2 class="section-title">Recuperar contraseña</h2>
+        <p class="login-intro">Ingresa tu correo y te enviaremos un enlace para restablecer tu acceso.</p>
+
+        <form (ngSubmit)="sendRecovery()" class="login-form" autocomplete="off" novalidate>
+          <mat-form-field appearance="outline">
+            <mat-label>Correo electrónico</mat-label>
+            <input
+              matInput
+              name="recoveryEmail"
+              autocomplete="email"
+              [(ngModel)]="recoveryEmail"
+              placeholder="tu@correo.com"
+            />
+          </mat-form-field>
+
+          <div *ngIf="recoveryError" class="login-error">
+            {{ recoveryError }}
+          </div>
+
+          <app-button
+            type="button"
+            variant="primary"
+            [fullWidth]="true"
+            [loading]="loadingRecovery"
+            [disabled]="loadingRecovery"
+            (clicked)="sendRecovery()"
+          >
+            {{ loadingRecovery ? 'Enviando...' : 'Enviar enlace' }}
+          </app-button>
+        </form>
+      </ng-container>
+
+      <ng-container *ngIf="view === 'recovery-sent'">
+        <div class="recovery-sent-mark">✓</div>
+        <h2 class="section-title">Revisa tu correo</h2>
+        <p class="login-intro">
+          Si existe una cuenta asociada, recibirás un enlace para restablecer tu contraseña en breve.
+        </p>
+
+        <app-button
+          type="button"
+          variant="outline"
+          [fullWidth]="true"
+          (clicked)="backToLogin()"
+        >
+          Volver al inicio
+        </app-button>
+      </ng-container>
     </mat-card>
-
+  </div>
 </div>
