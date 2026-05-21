@@ -1,61 +1,146 @@
+<!-- Hero -->
 <section class="hero">
-    <div class="hero-content">
-        <p class="eyebrow">Fragancias premium</p>
-
-        <h1>Encuentra tu aroma perfecto</h1>
-
-        <p class="subtitle">
-            Perfumes elegantes para hombre, mujer y unisex.
-        </p>
-
-        <a mat-raised-button color="primary" routerLink="/catalog">
-            Explorar catálogo
-        </a>
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <span class="hero-tagline">Colección 2026</span>
+    <h1 class="hero-title">El arte de la fragancia,<br/>al alcance de tu mano</h1>
+    <p class="hero-sub">
+      Descubre nuestra selección curada de perfumes de las mejores
+      casas fragancistas del mundo. Desde clásicos atemporales hasta
+      creaciones contemporáneas.
+    </p>
+    <div class="hero-search">
+      <input
+        class="search-input"
+        type="text"
+        placeholder="Buscar perfume..."
+        [(ngModel)]="searchTerm"
+        (keyup.enter)="search()"
+      />
+      <button class="search-btn" (click)="search()">
+        <mat-icon>search</mat-icon>
+      </button>
     </div>
+    <div class="hero-actions">
+      <app-button
+        variant="primary"
+        icon="arrow_forward"
+        iconPosition="end"
+        routerLink="/catalog"
+      >
+        Ver catálogo
+      </app-button>
+      <app-button
+        variant="outline"
+        routerLink="/catalog"
+      >
+        Contactar
+      </app-button>
+    </div>
+  </div>
 </section>
 
-<section class="section">
-    <div class="section-header">
-        <h2>Destacados</h2>
-        <a routerLink="/catalog">Ver todos</a>
+<!-- Características -->
+<section class="features-section">
+  <div class="section-inner">
+    <div class="features-grid">
+      @for (item of features; track item.title) {
+        <app-feature-card
+          [icon]="item.icon"
+          [title]="item.title"
+          [description]="item.description"
+        />
+      }
     </div>
+  </div>
+</section>
 
-    <div class="products-grid">
-        @for (product of featuredProducts; track product.id) {
-        <mat-card class="product-card" [routerLink]="['/product', product.slug]">
+<!-- Categorías -->
+<section class="categories-section">
+  <div class="section-inner">
+    <h2 class="section-title">Explorar por categoría</h2>
+    <div class="categories-grid">
+      @for (cat of categories; track cat.value) {
+        <app-category-card
+          [value]="cat.value"
+          [label]="cat.label"
+          [description]="cat.description"
+        />
+      }
+    </div>
+  </div>
+</section>
 
-            <div class="badges">
-                @if (product.isNew) {
-                <span class="badge new">Nuevo</span>
-                }
+<!-- Productos slider -->
+<section class="slider-section">
+  <div class="slider-header">
+    <div>
+      <span class="slider-label">Colección</span>
+      <h2>Descubre nuestros productos</h2>
+    </div>
+    <a routerLink="/catalog" class="slider-link">Ver todos →</a>
+  </div>
 
-                @if (product.bestSeller) {
-                <span class="badge best">Más vendido</span>
-                }
+  <div class="filter-pills">
+    <span
+      class="pill-slider"
+      [style.transform]="'translateX(' + filterIndex * 100 + '%)'"
+    ></span>
+    <button
+      class="pill"
+      [class.active]="activeFilter === 'featured'"
+      (click)="setFilter('featured')"
+    >Destacados</button>
+    <button
+      class="pill"
+      [class.active]="activeFilter === 'new'"
+      (click)="setFilter('new')"
+    >Nuevos</button>
+    <button
+      class="pill"
+      [class.active]="activeFilter === 'bestSeller'"
+      (click)="setFilter('bestSeller')"
+    >Más vendidos</button>
+  </div>
 
-                @if (product.featured) {
-                <span class="badge featured">Destacado</span>
-                }
-            </div>
+  <div class="slider-wrapper">
+    <button
+      class="arrow arrow-left"
+      [class.hidden]="atStart"
+      (click)="prev()"
+    >
+      <mat-icon>chevron_left</mat-icon>
+    </button>
 
-            <div class="image-box">
-                <img [src]="product.mainImageUrl ? baseUrl + product.mainImageUrl : 'https://placehold.co/400x400?text=Perfume'"
-                    [alt]="product.name" />
-            </div>
-
-            <mat-card-content>
-                <p class="brand">{{ product.brandName }}</p>
-                <h3>{{ product.name }}</h3>
-                <p class="price">Q {{ product.price }}</p>
-            </mat-card-content>
-
-            <mat-card-actions>
-                <a mat-raised-button color="primary" [routerLink]="['/product', product.id]">
-                    Ver producto
-                </a>
-            </mat-card-actions>
-
-        </mat-card>
+    <div class="slider-viewport">
+      <div
+        class="slider-track"
+        [style.transform]="'translateX(-' + scrollIndex * (100 / itemsPerPage) + '%)'"
+      >
+        @for (product of sliderProducts; track trackByProductId) {
+          <div class="slider-slide">
+            <app-product-card [product]="product" />
+          </div>
         }
+      </div>
     </div>
+
+    <button
+      class="arrow arrow-right"
+      [class.hidden]="atEnd"
+      (click)="next()"
+    >
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+
+  <div class="slider-dots">
+    @for (item of [].constructor(maxScrollIndex + 1); track $index) {
+      <span
+        class="dot"
+        [class.active]="$index === scrollIndex"
+        (click)="scrollIndex = $index"
+      ></span>
+    }
+  </div>
 </section>

@@ -45,6 +45,20 @@ export class CartService {
     this.saveCart(items);
   }
 
+  updateQuantity(productId: number, quantity: number): void {
+    const items = [...this.cartItemsSubject.value];
+    const item = items.find(i => i.product.id === productId);
+
+    if (item) {
+      if (quantity <= 0) {
+        this.removeFromCart(productId);
+        return;
+      }
+      item.quantity = quantity;
+      this.saveCart(items);
+    }
+  }
+
   clearCart(): void {
     this.saveCart([]);
   }

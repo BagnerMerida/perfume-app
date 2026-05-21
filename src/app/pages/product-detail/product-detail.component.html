@@ -1,48 +1,142 @@
-<div class="detail-container">
+<div class="detail-page">
 
-    @if (loading) {
+  <!-- Loading -->
+  @if (loading) {
     <div class="loading">
-        <mat-spinner diameter="40"></mat-spinner>
-        <p>Cargando producto...</p>
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Cargando producto...</p>
     </div>
-    }
+  }
 
-    @if (product) {
-    <mat-card class="detail-card">
+  @if (product) {
+    <!-- Breadcrumb -->
+    <app-button
+      variant="ghost"
+      size="sm"
+      icon="arrow_back"
+      iconPosition="start"
+      (clicked)="goBack()"
+    >
+      Volver
+    </app-button>
 
-        <div class="image-section">
-            <img [src]="product.mainImageUrl ? baseUrl + product.mainImageUrl : 'assets/no-image.png'"
-                [alt]="product.name" />
+    <!-- Detalle principal -->
+    <div class="detail-grid">
+      <!-- Imagen -->
+      <div class="image-section">
+        <img [src]="imageUrl" [alt]="product.name" />
+      </div>
+
+      <!-- Info -->
+      <div class="info-section">
+        <span class="category-label">{{ product.categoryName }}</span>
+        <h1>{{ product.name }}</h1>
+        <p class="brand-name">{{ product.brandName }}</p>
+
+        <p class="price">Q {{ product.price }}</p>
+
+        <p class="description">{{ product.description }}</p>
+
+        <!-- Atributos -->
+        <div class="attrs-grid">
+          <div class="attr-card">
+            <mat-icon>opacity</mat-icon>
+            <div>
+              <span class="attr-label">Concentración</span>
+              <span class="attr-value">{{ product.concentration || '—' }}</span>
+            </div>
+          </div>
+          <div class="attr-card">
+            <mat-icon>inventory_2</mat-icon>
+            <div>
+              <span class="attr-label">Stock</span>
+              <span class="attr-value" [class.out-of-stock]="isOutOfStock">
+                @if (isOutOfStock) {
+                  Sin stock
+                } @else {
+                  {{ product.stock }} unidades
+                }
+              </span>
+            </div>
+          </div>
+          <div class="attr-card">
+            <mat-icon>wc</mat-icon>
+            <div>
+              <span class="attr-label">Género</span>
+              <span class="attr-value">{{ genderLabel }}</span>
+            </div>
+          </div>
         </div>
 
-        <div class="info-section">
-            <p class="brand">{{ product.brandName }}</p>
-
-            <h1>{{ product.name }}</h1>
-
-            <p class="category">
-                {{ product.categoryName }} · {{ product.fragranceType }}
+        <!-- Notas olfativas -->
+        @if (notes.length > 0) {
+          <div class="notes-section">
+            <p class="notes-title">
+              <mat-icon>local_offer</mat-icon>
+              Notas
             </p>
+            <div class="notes-tags">
+              @for (note of notes; track note) {
+                <span class="note-tag">{{ note }}</span>
+              }
+            </div>
+          </div>
+        }
 
-            <p class="description">
-                {{ product.description }}
-            </p>
+        <!-- En carrito -->
+        @if (currentInCart > 0) {
+          <div class="in-cart-info">
+            <mat-icon>check_circle</mat-icon>
+            {{ currentInCart }} unidad{{ currentInCart !== 1 ? 'es' : '' }} ya en el carrito
+          </div>
+        }
 
-            <p class="price">
-                Q {{ product.price }}
-            </p>
+        <!-- Selector cantidad + agregar -->
+        @if (!isOutOfStock) {
+          <div class="add-row">
+            <app-quantity-selector
+              [quantity]="qty"
+              [max]="maxAddable"
+              size="md"
+              (quantityChange)="qty = $event"
+            />
 
-            <p class="stock">
-                Stock disponible: {{ product.stock }}
-            </p>
-            <button mat-raised-button color="primary" [disabled]="product.stock <= 0" (click)="addToCart()">
+            <app-button
+              variant="primary"
+              icon="shopping_cart"
+              iconPosition="start"
+              [disabled]="maxAddable <= 0"
+              (clicked)="addToCart()"
+              [fullWidth]="true"
+            >
+              Agregar al carrito
+            </app-button>
+          </div>
+        } @else {
+          <div class="no-stock">
+            <mat-icon>warning</mat-icon>
+            Producto temporalmente sin stock
+          </div>
+        }
 
-                Agregar al carrito
+        <!-- Ir al carrito -->
+        <a class="cart-link" routerLink="/cart">
+          Ver carrito →
+        </a>
+      </div>
+    </div>
 
-            </button>
+    <!-- Productos relacionados -->
+    @if (related.length > 0) {
+      <section class="related-section">
+        <h2>También te puede interesar</h2>
+        <div class="related-grid">
+          @for (p of related; track p.id) {
+            <app-product-card [product]="p" />
+          }
         </div>
-
-    </mat-card>
+      </section>
     }
+  }
 
 </div>

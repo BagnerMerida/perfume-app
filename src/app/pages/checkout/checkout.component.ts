@@ -2,14 +2,17 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { CartItem } from '../../models/cart-item';
 import { CartService } from '../../core/services/cart.service';
 import { OrderService } from '../../core/services/order.service';
 import { Router } from '@angular/router';
 import { OrderRequest } from '../../models/order-request';
+import { ButtonComponent } from '../../shared/components';
 
 @Component({
   selector: 'app-checkout',
@@ -17,10 +20,12 @@ import { OrderRequest } from '../../models/order-request';
   imports: [
     CommonModule,
     FormsModule,
-    MatCardModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatInputModule
+    MatIconModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+    ButtonComponent
   ],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.css'
@@ -30,6 +35,7 @@ export class CheckoutComponent implements OnInit {
   cartItems: CartItem[] = [];
   total = 0;
   loading = false;
+  success = false;
   customerName = '';
   phone = '';
   address = '';
@@ -37,7 +43,8 @@ export class CheckoutComponent implements OnInit {
   constructor(
     private cartService: CartService,
     private orderService: OrderService,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
@@ -49,11 +56,11 @@ export class CheckoutComponent implements OnInit {
 
   confirmOrder(): void {
     if (!this.customerName || !this.phone) {
-      alert('Nombre y teléfono son obligatorios');
+      this.snackBar.open('Nombre y teléfono son obligatorios', 'Cerrar', { duration: 3000 });
       return;
     }
     if (this.cartItems.length === 0) {
-      alert('El carrito está vacío');
+      this.snackBar.open('El carrito está vacío', 'Cerrar', { duration: 3000 });
       return;
     }
 
@@ -73,16 +80,28 @@ export class CheckoutComponent implements OnInit {
       next: () => {
         this.cartService.clearCart();
         this.loading = false;
-        alert('Pedido creado correctamente');
-        this.router.navigate(['/']);
+        this.success = true;
       },
 
       error: (error) => {
         console.error(error);
         this.loading = false;
-        alert(error?.error?.message || 'Error al crear el pedido');
+        this.snackBar.open(error?.error?.message || 'Error al crear el pedido', 'Cerrar', { duration: 5000 });
       }
     });
   }
 
+  goHome(): void {
+    this.router.navigate(['/']);
+  }
+
+  get isFormValid(): boolean {
+    return !!(
+      this.customerName.trim() &&
+      this.phone.trim() &&
+      this.address.trim() &&
+      this.cartItems.length > 0
+    );
+  }
 }
+

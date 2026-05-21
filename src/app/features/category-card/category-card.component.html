@@ -1,0 +1,12 @@
+<a
+  class="category-card"
+  [routerLink]="['/catalog']"
+  [queryParams]="{ gender: value }"
+>
+  <h3 class="category-label">{{ label }}</h3>
+  <p class="category-desc">{{ description }}</p>
+  <span class="category-link">
+    Ver más
+    <mat-icon>arrow_forward</mat-icon>
+  </span>
+</a>

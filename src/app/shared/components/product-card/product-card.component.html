@@ -1,0 +1,50 @@
+<article class="product-card">
+  <!-- Imagen -->
+  <a [routerLink]="['/product', product.slug]" class="image-link">
+    <div class="image-wrapper">
+      <img
+        [src]="imageUrl"
+        [alt]="product.name"
+        class="product-img"
+        loading="lazy"
+      />
+
+      <!-- Badge categoría -->
+      <span class="category-badge">{{ product.categoryName }}</span>
+
+      <!-- Overlay sin stock -->
+      @if (isOutOfStock) {
+        <div class="out-of-stock-overlay">
+          <span class="out-of-stock-label">
+            <mat-icon>warning</mat-icon>
+            Sin stock
+          </span>
+        </div>
+      }
+    </div>
+  </a>
+
+  <!-- Info -->
+  <div class="product-info">
+    <p class="product-brand">{{ product.brandName }}</p>
+    <a [routerLink]="['/product', product.slug]" class="product-name">
+      {{ product.name }}
+    </a>
+    <p class="product-meta">{{ product.concentration }}</p>
+
+    <div class="product-footer">
+      <span class="product-price">Q {{ product.price }}</span>
+
+      <button
+        class="add-btn"
+        [class.add-btn--disabled]="isOutOfStock || isMaxInCart"
+        [disabled]="isOutOfStock || isMaxInCart"
+        (click)="addToCart($event)"
+        [attr.aria-label]="'Agregar ' + product.name + ' al carrito'"
+      >
+        <mat-icon>shopping_cart</mat-icon>
+        Agregar
+      </button>
+    </div>
+  </div>
+</article>

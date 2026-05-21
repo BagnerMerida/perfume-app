@@ -130,4 +130,14 @@ export class AdminProductFormComponent implements OnInit {
 
     return brand ? brand.name : 'Marca';
   }
+
+  get isFormValid(): boolean {
+    return !!(
+      this.product.name &&
+      this.product.brandId &&
+      this.product.categoryId &&
+      this.product.price > 0 &&
+      this.product.stock >= 0
+    );
+  }
 }
